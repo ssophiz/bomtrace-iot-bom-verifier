@@ -23,6 +23,14 @@ python probe_byte_drift.py --bom upstream_sources\openwrt-24.10.4-x86-64.bom.cdx
 
 The six unmodified pairs cover OpenWrt 24.10.4 on x86-64, ARMv7 and ARMv8; 23.05.5 on x86-64; and 25.12.6 on ARMv8 and x86-64. Four use `opkg` and two use `apk`. Their 771 published components mapped to installed package records with zero findings. Five isolated, explicitly labeled metadata mutations per build produced 30 positive cases; BomTrace located 30/30 with no extra findings in these 36 controlled cases. The CycloneDX 1.4 schema validator raised a **case-level** alert on the six duplicate-component cases. Version-only and inventory-only rule ablations each located 12/30 exact labels. These are mutation tests on one firmware family, **not field precision/recall estimates** or an independent-tool comparison. `results/` holds the saved output; the scripts recompute it.
 
+## Cross-release pairing check
+
+`benchmark_cross_release.py` pairs each unmodified official BOM with every downloaded rootfs from the same target architecture. The 14 cases contain six same-build controls and eight **deliberately mismatched releases**. BomTrace raised a case-level alert on all eight mismatches and none of the controls. An intentionally naive exact name/version comparator alerted on all eight mismatches **and all six controls**; schema-only validation alerted on none. These are release-pair identity labels, not independently adjudicated package defects or naturally occurring attacks. The raw comparator is not an existing product. `results/cross_release_benchmark.json` records every pair, finding, source hash, and baseline count.
+
+```powershell
+python benchmark_cross_release.py --source-dir upstream_sources --out cross_release_local.json
+```
+
 The byte-drift probe changes one BusyBox byte in a temporary archive but leaves `opkg` status unchanged. The file hashes differ and the inventory verifier produces no finding. This is an explicit coverage gap caused by missing file digests in the published BOM.
 
 ## Existing-tool cross-check
@@ -55,7 +63,7 @@ The synthetic fixtures have five mutation-defined findings. BomTrace located fiv
 
 - The `opkg` or `apk` database is read from firmware and is not independently authenticated. An attacker who changes both it and the BOM may make them agree.
 - File presence and a matching hash do not prove benign behavior or runtime use. Static configuration references are not runtime traces.
-- The OpenWrt-specific alias and version rules do not apply to arbitrary package managers. Encrypted images, proprietary formats, and full AI/CBOM semantics are outside this prototype.
+- The OpenWrt-specific alias and version rules do not apply to arbitrary package managers. Encrypted images, proprietary formats, and full AI/CBOM semantics are outside this prototype. No established artifact verifier has been benchmarked head to head.
 - OpenWrt archives and published BOM bytes are not redistributed here. `download_sources.py` records source URLs and rejects checksum mismatches.
 
 ## License
