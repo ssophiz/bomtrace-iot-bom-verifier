@@ -14,10 +14,10 @@ import tempfile
 from pathlib import Path
 
 from benchmark_openwrt import SOURCES
-from verify_openwrt_bom import parse_status, read_status, verify
+from verify_openwrt_bom import package_database, read_status, verify
 
 
-STATUS_PATHS = {"/usr/lib/opkg/status", "/var/lib/opkg/status"}
+STATUS_PATHS = {"/usr/lib/opkg/status", "/var/lib/opkg/status", "/lib/apk/db/installed"}
 
 
 def file_hash(path: Path) -> str:
@@ -62,16 +62,18 @@ def main() -> None:
             out = Path(temp) / f"{stem}.syft.json"
             subprocess.run([str(syft), "scan", str(archive), "--output", f"cyclonedx-json={out}", "--quiet"], check=True)
             syft_inventory = status_components(json.loads(out.read_text(encoding="utf-8")))
-            raw_status = {name: item["Version"] for name, item in parse_status(read_status(archive)).items()}
+            package_rows, database_format = package_database(read_status(archive))
+            raw_status = {name: item["Version"] for name, item in package_rows.items()}
             published = {item["name"]: item["version"] for item in json.loads(bom_file.read_text(encoding="utf-8"))["components"]}
             if syft_inventory != raw_status:
-                raise ValueError(f"Syft and opkg status differ: {build}")
+                raise ValueError(f"Syft and package database differ: {build}")
             actual_report = verify(json.loads(bom_file.read_text(encoding="utf-8")), read_status(archive))
             row = {
                 "build": build,
+                "package_database_format": database_format,
                 "syft_status_packages": len(syft_inventory),
-                "opkg_status_packages": len(raw_status),
-                "exact_syft_opkg_pairs": len(syft_inventory),
+                "package_database_packages": len(raw_status),
+                "exact_syft_database_pairs": len(syft_inventory),
                 "published_bom_components": len(published),
                 "raw_diff_bom_only_names": len(published.keys() - syft_inventory.keys()),
                 "raw_diff_status_only_names": len(syft_inventory.keys() - published.keys()),
@@ -80,15 +82,15 @@ def main() -> None:
                 "bomtrace_findings_on_unmodified_pair": len(actual_report["findings"]),
             }
             rows.append(row)
-    totals = {key: sum(row[key] for row in rows) for key in rows[0] if key != "build"}
+    totals = {key: sum(row[key] for row in rows) for key in rows[0] if key not in ("build", "package_database_format")}
     result = {
         "tool": "Anchore Syft 1.57.2, official Windows AMD64 release",
         "syft_exe_sha256": file_hash(syft),
         "syft_release_zip_sha256": "0a10e03ffd124c304fd7e7491262dba2e5f68eb12378b106d7525146675b2e3a",
-        "method": "Syft scans each original rootfs tar.gz. Only components whose evidence location is /usr/lib/opkg/status or /var/lib/opkg/status are retained. Compare those name/version pairs to the opkg text and to the published BOM without normalization; separately run BomTrace normalization.",
+        "method": "Syft scans each original rootfs tar.gz. Only components whose evidence location is an opkg status or apk installed database are retained. Compare those name/version pairs to the package database text and to the published BOM without normalization; separately run BomTrace normalization.",
         "rows": rows,
         "totals": totals,
-        "interpretation": "Syft generated the package inventory and agreed exactly with the parsed opkg status. The raw BOM-versus-inventory diff is a deliberately naive comparator that ignores Provides aliases and OpenWrt version conventions; its differences are not Syft errors or confirmed BOM defects. BomTrace adds the reconciliation step.",
+        "interpretation": "Syft generated the package inventory and agreed exactly with the parsed opkg or apk database. The raw BOM-versus-inventory diff is a deliberately naive comparator that ignores Provides aliases and OpenWrt version conventions; its differences are not Syft errors or confirmed BOM defects. BomTrace adds the reconciliation step.",
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

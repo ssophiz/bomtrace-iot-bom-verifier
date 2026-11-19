@@ -10,6 +10,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import statistics
 import time
 from pathlib import Path
@@ -24,6 +25,8 @@ SOURCES = {
     "24.10.4-armsr-armv7": ("openwrt-24.10.4-armsr-armv7", "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv7/", "d3ff8e6186cbe2b0423cdbe1f898d5002799f25604334d2bb4ccb3cd1b650494", "95f4900f8cae85df0c1ec4a0b57d5903463b6f74006e93e79fdeae67a4cd650c"),
     "24.10.4-armsr-armv8": ("openwrt-24.10.4-armsr-armv8", "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv8/", "b9e784570872f0c3875d75c54eba842fa6f8a9fb2503897080db240fff6431a3", "cd08a3d1ca3406fafca1e75bcf034b9c927bce164450b4b4b4b5622b9be8aebe"),
     "23.05.5-x86-64": ("openwrt-23.05.5-x86-64", "https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/", "383311300e1fd796f5a39bf09ad87bcedec61a7f09263f79cd1352757a3573a9", "1f5972b44c19f49914e21654f13dceb7db4c59f79d6a4e0f7b19a95da9a62e07"),
+    "25.12.6-armsr-armv8": ("openwrt-25.12.6-armsr-armv8", "https://downloads.openwrt.org/releases/25.12.6/targets/armsr/armv8/", "8fcb00eb886d9add37e111a4ec43d47d57aa74742281c6a8f348a7a7ec37edb7", "ebe61c786a6594183219816eed04878fc28a25f097b4068095b45b673b38ecba"),
+    "25.12.6-x86-64": ("openwrt-25.12.6-x86-64", "https://downloads.openwrt.org/releases/25.12.6/targets/x86/64/", "55e52bb34de582a1ebe56bd50f94ff54ac7c77f5bca9cae807656d1930456da4", "0f8461f2a44780867c938764b0a49df84323d220874f11853864812d26a54951"),
 }
 
 
@@ -69,6 +72,10 @@ def mutate(bom: dict, status: str, scenario: str) -> tuple[dict, str, set[str]]:
             if block.startswith("Package: busybox\n"):
                 lines = block.splitlines()
                 blocks[i] = "\n".join("Version: 0.0.0-r1" if line.startswith("Version: ") else line for line in lines)
+                return bom, "\n\n".join(blocks), {"PACKAGE_VERSION_MISMATCH|busybox"}
+            if re.search(r"^P:busybox$", block, re.M):
+                lines = block.splitlines()
+                blocks[i] = "\n".join("V:0.0.0-r1" if line.startswith("V:") else line for line in lines)
                 return bom, "\n\n".join(blocks), {"PACKAGE_VERSION_MISMATCH|busybox"}
         raise ValueError("busybox status record missing")
     raise ValueError(scenario)
@@ -119,27 +126,41 @@ def main() -> None:
                     alerted[method][1].add(f"{build}:{scenario}")
             rows.append({"build": build, "scenario": scenario, "expected": sorted(expected),
                          "found": sorted(full), "unresolved": report["unresolved"],
+                         "package_database_format": report["package_database_format"],
                          "schema_error_count": len(schema_errors),
                          "runtime_ms": round(elapsed, 3), "bom_components": report["bom_component_count"],
                          "installed_packages": report["installed_package_count"],
                          "matched_installed": report["matched_installed_count"]})
+    by_database = {}
+    for database_format in ("opkg", "apk"):
+        selected = [row for row in rows if row["package_database_format"] == database_format]
+        found = {f"{row['build']}:{row['scenario']}:{item}" for row in selected for item in row["found"]}
+        expected = {f"{row['build']}:{row['scenario']}:{item}" for row in selected for item in row["expected"]}
+        by_database[database_format] = {
+            "builds": sum(row["scenario"] == "clean" for row in selected),
+            "cases": len(selected),
+            "published_components": sum(row["bom_components"] for row in selected if row["scenario"] == "clean"),
+            "exact_finding_metrics": metrics(found, expected),
+            "runtime_ms_median": round(statistics.median(row["runtime_ms"] for row in selected), 3),
+        }
     result = {
-        "design": "4 unmodified official OpenWrt BOM/rootfs pairs plus 5 controlled metadata mutations per pair",
+        "design": "6 unmodified official OpenWrt BOM/rootfs pairs (opkg and apk) plus 5 controlled metadata mutations per pair",
         "labels": "defined by the explicit mutation operators; no naturally occurring attack labels",
         "source_manifest": manifest,
         "cases": len(rows), "positive_cases": sum(bool(r["expected"]) for r in rows),
         "unmodified_builds": len(SOURCES), "findings_expected": sum(len(r["expected"]) for r in rows),
         "finding_level_metrics": {name: metrics(*sets) for name, sets in pooled.items()},
         "case_alert_metrics": {name: metrics(*sets) for name, sets in alerted.items()},
+        "by_database": by_database,
         "runtime_ms_median": round(statistics.median(r["runtime_ms"] for r in rows), 3),
         "runtime_ms_max": round(max(r["runtime_ms"] for r in rows), 3),
         "runtime_scope": "verify() in-memory only; excludes rootfs archive read and CycloneDX schema validation",
         "rows": rows,
-        "limitations": "Verification reads opkg metadata from official rootfs archives. It cannot detect file-byte drift because the published BOMs have no file digests; these mutations do not test cryptographic or AI BOM verification.",
+        "limitations": "Verification reads opkg or apk metadata from official rootfs archives. It cannot detect file-byte drift because the published BOMs have no file digests; these mutations do not test cryptographic or AI BOM verification.",
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({k: result[k] for k in ("cases", "findings_expected", "finding_level_metrics", "case_alert_metrics", "runtime_ms_median", "runtime_ms_max")}, indent=2))
+    print(json.dumps({k: result[k] for k in ("cases", "findings_expected", "finding_level_metrics", "case_alert_metrics", "by_database", "runtime_ms_median", "runtime_ms_max")}, indent=2))
 
 
 if __name__ == "__main__":

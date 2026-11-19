@@ -1,4 +1,4 @@
-"""Reconcile a published OpenWrt CycloneDX BOM with its rootfs opkg database.
+"""Reconcile a published OpenWrt CycloneDX BOM with its rootfs package DB.
 
 This verifies package inventory metadata, not firmware file bytes.  OpenWrt's
 published CycloneDX 1.4 BOM has no file paths or hashes for these components.
@@ -31,14 +31,37 @@ def parse_status(text: str) -> dict[str, dict[str, str]]:
     return packages
 
 
+def parse_apk_installed(text: str) -> dict[str, dict[str, str]]:
+    packages = {}
+    for block in re.split(r"\n\s*\n", text):
+        fields = dict(re.findall(r"^([A-Za-z]):(.*)$", block, re.M))
+        name, version = fields.get("P"), fields.get("V")
+        if not name:
+            continue
+        if not version or name in packages:
+            raise ValueError(f"invalid or duplicate apk package: {name}")
+        provides = ",".join(token.split("=", 1)[0] for token in fields.get("p", "").split())
+        packages[name] = {"Package": name, "Version": version, "Provides": provides}
+    return packages
+
+
+def package_database(text: str) -> tuple[dict[str, dict[str, str]], str]:
+    if re.search(r"^Package: ", text, re.M):
+        return parse_status(text), "opkg"
+    if re.search(r"^P:", text, re.M):
+        return parse_apk_installed(text), "apk"
+    raise ValueError("unsupported package database")
+
+
 def read_status(archive: Path) -> str:
     with tarfile.open(archive, "r:gz") as tar:
-        names = [m for m in tar if m.name.lstrip("./") in ("usr/lib/opkg/status", "var/lib/opkg/status")]
+        names = [m for m in tar if m.name.lstrip("./") in
+                 ("usr/lib/opkg/status", "var/lib/opkg/status", "lib/apk/db/installed")]
         if len(names) != 1 or not names[0].isfile() or names[0].size > 8 * 1024 * 1024:
-            raise ValueError("expected one regular opkg status file")
+            raise ValueError("expected one regular opkg or apk database file")
         stream = tar.extractfile(names[0])
         if stream is None:
-            raise ValueError("opkg status unreadable")
+            raise ValueError("package database unreadable")
         return stream.read().decode("utf-8", errors="replace")
 
 
@@ -68,7 +91,7 @@ def verify(bom: dict, status_text: str) -> dict:
     components = bom.get("components")
     if not isinstance(components, list):
         raise ValueError("BOM components must be a list")
-    installed = parse_status(status_text)
+    installed, database_format = package_database(status_text)
     lookup = aliases(installed)
     claimed_names = set()
     matched_installed = set()
@@ -107,16 +130,17 @@ def verify(bom: dict, status_text: str) -> dict:
     return {
         "format": "bomtrace-openwrt-report-0.1",
         "evidence_level": "published BOM versus installed-package database",
+        "package_database_format": database_format,
         "bom_component_count": len(components),
         "installed_package_count": len(installed),
         "matched_installed_count": len(matched_installed),
         "findings": findings,
         "unresolved": unresolved,
         "limitations": [
-            "The opkg database is not independently authenticated; a tampered database can mislead this check.",
+            "The opkg or apk database is not independently authenticated; a tampered database can mislead this check.",
             "The published BOM has no per-file path or digest, so file-byte drift cannot be determined.",
             "A package match does not establish runtime use or absence of vulnerabilities.",
-            "OpenWrt-specific Provides, -r revision and kernel build-id rules are not portable to other package managers.",
+            "OpenWrt-specific Provides, package revision and kernel build-id rules are not portable to unrelated distributions.",
         ],
     }
 
