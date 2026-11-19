@@ -1,0 +1,317 @@
+{
+  "design": "same-architecture ordered release-pair matrix; Syft package database inventory and published BOM projected to name/version-only CycloneDX 1.4; official CycloneDX CLI diff --component-versions",
+  "label_scope": "case-level release identity; deliberately mismatched pairs are not naturally occurring attacks or per-package ground truth",
+  "tool_scope": "CycloneDX CLI is a BOM-to-BOM diff tool, not a direct rootfs verifier. Its output is reported as a pipeline baseline, not a claim of errors in the tool.",
+  "cyclonedx_cli_version": "0.33.1+b3cfa4b0edc356dad07e0b6e7ab6da0a94af0246",
+  "cyclonedx_cli_exe_sha256": "9b360974c41a5d612eb026fb5e3bb1fa28e08865f7a4f915665b8bc94bd3bc31",
+  "syft_version": "1.57.2",
+  "syft_exe_sha256": "5c9d2ba5affae29c3c5ba5796ad28fc72780189fafcb893544325902a298b17e",
+  "source_manifest": [
+    {
+      "build": "24.10.4-x86-64",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/x86/64/openwrt-24.10.4-x86-64-rootfs.tar.gz",
+      "sha256": "e7f8ab84eef55c7eb23492de7b0517dbc23fbedaa4abbb680fe64720c309dc03"
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/x86/64/openwrt-24.10.4-x86-64.bom.cdx.json",
+      "sha256": "c35c542daff86733081d685ea4ee7f44f24a9094cf84bfd99e6eee32a45e9f99"
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv7/openwrt-24.10.4-armsr-armv7-rootfs.tar.gz",
+      "sha256": "d3ff8e6186cbe2b0423cdbe1f898d5002799f25604334d2bb4ccb3cd1b650494"
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv7/openwrt-24.10.4-armsr-armv7.bom.cdx.json",
+      "sha256": "95f4900f8cae85df0c1ec4a0b57d5903463b6f74006e93e79fdeae67a4cd650c"
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv8/openwrt-24.10.4-armsr-armv8-rootfs.tar.gz",
+      "sha256": "b9e784570872f0c3875d75c54eba842fa6f8a9fb2503897080db240fff6431a3"
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv8/openwrt-24.10.4-armsr-armv8.bom.cdx.json",
+      "sha256": "cd08a3d1ca3406fafca1e75bcf034b9c927bce164450b4b4b4b5622b9be8aebe"
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "url": "https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-23.05.5-x86-64-rootfs.tar.gz",
+      "sha256": "383311300e1fd796f5a39bf09ad87bcedec61a7f09263f79cd1352757a3573a9"
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "url": "https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-23.05.5-x86-64.bom.cdx.json",
+      "sha256": "1f5972b44c19f49914e21654f13dceb7db4c59f79d6a4e0f7b19a95da9a62e07"
+    },
+    {
+      "build": "25.12.6-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/25.12.6/targets/armsr/armv8/openwrt-25.12.6-armsr-armv8-rootfs.tar.gz",
+      "sha256": "8fcb00eb886d9add37e111a4ec43d47d57aa74742281c6a8f348a7a7ec37edb7"
+    },
+    {
+      "build": "25.12.6-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/25.12.6/targets/armsr/armv8/openwrt-25.12.6-armsr-armv8.bom.cdx.json",
+      "sha256": "ebe61c786a6594183219816eed04878fc28a25f097b4068095b45b673b38ecba"
+    },
+    {
+      "build": "25.12.6-x86-64",
+      "url": "https://downloads.openwrt.org/releases/25.12.6/targets/x86/64/openwrt-25.12.6-x86-64-rootfs.tar.gz",
+      "sha256": "55e52bb34de582a1ebe56bd50f94ff54ac7c77f5bca9cae807656d1930456da4"
+    },
+    {
+      "build": "25.12.6-x86-64",
+      "url": "https://downloads.openwrt.org/releases/25.12.6/targets/x86/64/openwrt-25.12.6-x86-64.bom.cdx.json",
+      "sha256": "0f8461f2a44780867c938764b0a49df84323d220874f11853864812d26a54951"
+    }
+  ],
+  "cases": 14,
+  "same_build_controls": 6,
+  "cross_release_pairs": 8,
+  "case_alert_metrics": {
+    "cyclonedx_cli_diff": {
+      "tp": 8,
+      "fp": 6,
+      "fn": 0,
+      "precision": 0.571,
+      "recall": 1.0
+    },
+    "bomtrace": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  },
+  "rows": [
+    {
+      "architecture": "armsr-armv7",
+      "bom_build": "24.10.4-armsr-armv7",
+      "rootfs_build": "24.10.4-armsr-armv7",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 104,
+        "removed": 104,
+        "unchanged": 20
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "armsr-armv8",
+      "bom_build": "24.10.4-armsr-armv8",
+      "rootfs_build": "24.10.4-armsr-armv8",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 104,
+        "removed": 104,
+        "unchanged": 20
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "armsr-armv8",
+      "bom_build": "24.10.4-armsr-armv8",
+      "rootfs_build": "25.12.6-armsr-armv8",
+      "rootfs_database_format": "apk",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 127,
+        "removed": 120,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 119,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "armsr-armv8",
+      "bom_build": "25.12.6-armsr-armv8",
+      "rootfs_build": "24.10.4-armsr-armv8",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 120,
+        "removed": 127,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 119,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "armsr-armv8",
+      "bom_build": "25.12.6-armsr-armv8",
+      "rootfs_build": "25.12.6-armsr-armv8",
+      "rootfs_database_format": "apk",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 108,
+        "removed": 108,
+        "unchanged": 23
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "24.10.4-x86-64",
+      "rootfs_build": "24.10.4-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 109,
+        "removed": 109,
+        "unchanged": 20
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "24.10.4-x86-64",
+      "rootfs_build": "23.05.5-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 123,
+        "removed": 125,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 115,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "24.10.4-x86-64",
+      "rootfs_build": "25.12.6-x86-64",
+      "rootfs_database_format": "apk",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 132,
+        "removed": 125,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 122,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "23.05.5-x86-64",
+      "rootfs_build": "24.10.4-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 125,
+        "removed": 123,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 114,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "23.05.5-x86-64",
+      "rootfs_build": "23.05.5-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 108,
+        "removed": 108,
+        "unchanged": 19
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "23.05.5-x86-64",
+      "rootfs_build": "25.12.6-x86-64",
+      "rootfs_database_format": "apk",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 133,
+        "removed": 124,
+        "unchanged": 3
+      },
+      "bomtrace_finding_count": 132,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "25.12.6-x86-64",
+      "rootfs_build": "24.10.4-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 125,
+        "removed": 132,
+        "unchanged": 4
+      },
+      "bomtrace_finding_count": 122,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "25.12.6-x86-64",
+      "rootfs_build": "23.05.5-x86-64",
+      "rootfs_database_format": "opkg",
+      "expected_case_alert": true,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": true,
+      "cyclonedx_cli_component_versions": {
+        "added": 124,
+        "removed": 133,
+        "unchanged": 3
+      },
+      "bomtrace_finding_count": 133,
+      "bomtrace_unresolved_count": 0
+    },
+    {
+      "architecture": "x86-64",
+      "bom_build": "25.12.6-x86-64",
+      "rootfs_build": "25.12.6-x86-64",
+      "rootfs_database_format": "apk",
+      "expected_case_alert": false,
+      "cyclonedx_cli_case_alert": true,
+      "bomtrace_case_alert": false,
+      "cyclonedx_cli_component_versions": {
+        "added": 113,
+        "removed": 113,
+        "unchanged": 23
+      },
+      "bomtrace_finding_count": 0,
+      "bomtrace_unresolved_count": 0
+    }
+  ],
+  "limitations": "The adapter discards all non-name/version BOM fields. Neither CycloneDX CLI nor Syft claims OpenWrt-specific Provides and upstream-version reconciliation. This is not a general existing-verifier head-to-head or field accuracy estimate."
+}

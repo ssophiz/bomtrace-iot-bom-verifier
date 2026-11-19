@@ -37,8 +37,11 @@ The byte-drift probe changes one BusyBox byte in a temporary archive but leaves 
 
 We ran the official [Syft v1.57.2](https://github.com/anchore/syft/releases/tag/v1.57.2) package cataloger on the six original OpenWrt archives. `syft_crosscheck.py` retains only components whose evidence location is an `opkg` status or `apk` installed-database file; the 771 retained name/version pairs exactly match the directly parsed package databases. Syft is an SBOM **generator**, not a verifier of OpenWrt's separately published BOM. A deliberately naive raw-string diff between its package records and the published BOM would mark 146 BOM-only names, 146 installed-only names and 500 version disagreements on shared names. Those are not Syft errors or confirmed BOM defects; OpenWrt's published upstream names and versions differ from installed ABI package names and revision-bearing versions. BomTrace supplies the reconciliation step. The saved summary is in `results/syft_crosscheck.json`; the Syft binary is not redistributed here.
 
+We also ran the official [CycloneDX CLI v0.33.1](https://github.com/CycloneDX/cyclonedx-cli/releases/tag/v0.33.1) diff command on the 14 release pairings. `compare_cyclonedx_cli.py` uses Syft to create the installed-package BOM, projects it and the published BOM to name/version-only CycloneDX 1.4 documents, then calls `diff --component-versions`. It reports changes for all eight deliberate cross-release pairs **and all six valid same-build controls**. This measures a BOM-to-BOM diff pipeline, not direct rootfs verification or a defect in CycloneDX CLI. The two BOMs use different OpenWrt naming and version conventions. `results/cyclonedx_cli_comparison.json` records every pair and executable hash; neither binary is redistributed.
+
 ```powershell
 python syft_crosscheck.py --syft-exe path\to\syft.exe --source-dir upstream_sources --out syft_local.json
+python compare_cyclonedx_cli.py --syft-exe path\to\syft.exe --cyclonedx-exe path\to\cyclonedx-win-x64.exe --source-dir upstream_sources --out cli_comparison_local.json
 ```
 
 ## Transferability check: Torizon OS
@@ -63,7 +66,7 @@ The synthetic fixtures have five mutation-defined findings. BomTrace located fiv
 
 - The `opkg` or `apk` database is read from firmware and is not independently authenticated. An attacker who changes both it and the BOM may make them agree.
 - File presence and a matching hash do not prove benign behavior or runtime use. Static configuration references are not runtime traces.
-- The OpenWrt-specific alias and version rules do not apply to arbitrary package managers. Encrypted images, proprietary formats, and full AI/CBOM semantics are outside this prototype. No established artifact verifier has been benchmarked head to head.
+- The OpenWrt-specific alias and version rules do not apply to arbitrary package managers. Encrypted images, proprietary formats, and full AI/CBOM semantics are outside this prototype. The CycloneDX CLI comparison is a different document-diff task, not an equivalent rootfs-verifier head-to-head. Existing tools such as [sbom-tools](https://github.com/sbom-tool/sbom-tools/blob/v0.4.0/src/cli/verify.rs) already check file hashes and model weights; BomTrace does not claim those checks as unique.
 - OpenWrt archives and published BOM bytes are not redistributed here. `download_sources.py` records source URLs and rejects checksum mismatches.
 
 ## License
