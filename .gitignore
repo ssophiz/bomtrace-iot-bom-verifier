@@ -9,3 +9,4 @@ openwrt_trial_local/
 *.pptx
 *.manifest
 bom.json
+*.syft.cdx.json
