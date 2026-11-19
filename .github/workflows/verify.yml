@@ -1,0 +1,41 @@
+name: Reproduce BomTrace evidence
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Check path safety and synthetic three-view evidence
+        run: |
+          python test_paths.py -v
+          python make_fixtures.py --out fixtures_local
+          python benchmark.py --fixtures fixtures_local --out synthetic_local.json
+      - name: Download and hash-check official OpenWrt pairs
+        run: python download_sources.py --out upstream_sources
+      - name: Reproduce package and release-pair results
+        run: |
+          python benchmark_openwrt.py --source-dir upstream_sources --out official_local.json
+          python benchmark_cross_release.py --source-dir upstream_sources --out cross_release_local.json
+          python probe_byte_drift.py --bom upstream_sources/openwrt-24.10.4-x86-64.bom.cdx.json --archive upstream_sources/openwrt-24.10.4-x86-64-rootfs.tar.gz --out byte_probe_local.json
+      - name: Match committed evidence apart from timings
+        run: |
+          python check_reproducibility.py \
+            --synthetic synthetic_local.json \
+            --official official_local.json \
+            --cross-release cross_release_local.json \
+            --byte-probe byte_probe_local.json

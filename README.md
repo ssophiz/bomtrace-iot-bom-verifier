@@ -9,6 +9,10 @@ BomTrace checks what an IoT bill of materials (BOM) can actually support with fi
 
 The modes are intentionally distinct because a published package-only BOM cannot be silently upgraded into a byte-level assertion. Both modes report the limitations of their evidence.
 
+## CI integration
+
+[The public workflow](.github/workflows/verify.yml) runs on pushes, pull requests and manual dispatch. It installs pinned Python dependencies, checks path handling, regenerates the synthetic fixtures, downloads six official OpenWrt BOM/rootfs pairs with SHA-256 checks, and reruns the metadata-mutation, cross-release and byte-drift experiments. `check_reproducibility.py` compares every regenerated finding and source hash with committed reference results, excluding only wall-clock timing fields. The upstream archives remain untracked and are not uploaded as CI artifacts. This is a reproducibility gate for the tested OpenWrt scope, not an automatic verdict on arbitrary vendor firmware.
+
 ## Reproduce the official OpenWrt evaluation
 
 Tested on Python 3.13. Install `requirements.txt`. The source downloader fetches six official BOM/rootfs pairs, checks each against hard-coded SHA-256 values from the official release indexes, and keeps upstream bytes in an ignored local directory. No firmware is executed.
