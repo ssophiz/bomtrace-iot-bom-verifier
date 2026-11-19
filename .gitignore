@@ -7,3 +7,5 @@ openwrt_trial_local/
 *.tar.gz
 *.mp4
 *.pptx
+*.manifest
+bom.json

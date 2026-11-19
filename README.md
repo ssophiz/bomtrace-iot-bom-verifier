@@ -25,6 +25,14 @@ The four unmodified pairs cover OpenWrt 24.10.4 on x86-64, ARMv7 and ARMv8 and 2
 
 The byte-drift probe changes one BusyBox byte in a temporary archive but leaves `opkg` status unchanged. The file hashes differ and the inventory verifier produces no finding. This is an explicit coverage gap caused by missing file digests in the published BOM.
 
+## Transferability check: Torizon OS
+
+Toradex [documents](https://developer.toradex.com/torizon/traceability/sbom/) its CycloneDX BOM as an actionable, vulnerability-oriented view and its SPDX BOM as the complete file inventory. `probe_torizon.py` compares one official Verdin AM62 build's [CycloneDX BOM](https://artifacts.toradex.com/artifactory/torizoncore-oe-prerelease-frankfurt/scarthgap-7.x.y/monthly/19/verdin-am62/torizon/torizon-docker/oedeploy/bom.json) with its [package manifest](https://artifacts.toradex.com/artifactory/torizoncore-oe-prerelease-frankfurt/scarthgap-7.x.y/monthly/19/verdin-am62/torizon/torizon-docker/oedeploy/torizon-docker-verdin-am62-20260506185053.manifest). It checks both files against the publisher's Artifactory SHA-256 values, then reports exact-name join coverage without labeling absent packages. The BOM has 218 component rows and 212 unique names; the manifest has 1,839 package names; only 134 names overlap exactly. These are **coverage counts, not defect or accuracy measurements**. OpenWrt-specific matching is not applied to this Yocto-style view. The saved result is in `results/torizon_transfer_probe.json`; upstream Toradex bytes are not in this repository.
+
+```powershell
+python probe_torizon.py --bom path\to\bom.json --manifest path\to\torizon-docker-verdin-am62-20260506185053.manifest --out torizon_local.json
+```
+
 ## Reproduce the three-view smoke test
 
 ```powershell

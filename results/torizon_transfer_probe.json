@@ -1,0 +1,23 @@
+{
+  "status": "unsupported for OpenWrt package-inventory reconciliation",
+  "evidence_level": "published actionable BOM versus same-build published package manifest; no firmware bytes checked",
+  "bom_component_count": 218,
+  "bom_unique_names": 212,
+  "manifest_package_count": 1839,
+  "unique_names_shared_exactly": 134,
+  "components_with_exact_name_and_version": 126,
+  "bom_unique_names_without_exact_manifest_name": 78,
+  "manifest_names_without_exact_bom_name": 1705,
+  "bom_duplicate_name_count": 6,
+  "interpretation": "Toradex documents its CycloneDX BOM as an actionable view with vulnerability-oriented names/versions and its complete SPDX BOM as a different view. A naive one-to-one package join would create unsupported mismatch claims. This probe reports coverage only and makes no error or accuracy assertion.",
+  "sources": {
+    "bom": {
+      "url": "https://artifacts.toradex.com/artifactory/torizoncore-oe-prerelease-frankfurt/scarthgap-7.x.y/monthly/19/verdin-am62/torizon/torizon-docker/oedeploy/bom.json",
+      "sha256": "2b0c99272721b7241667c23c0e927e6ca34ea4c2d217591f05b5aaa238de3b26"
+    },
+    "manifest": {
+      "url": "https://artifacts.toradex.com/artifactory/torizoncore-oe-prerelease-frankfurt/scarthgap-7.x.y/monthly/19/verdin-am62/torizon/torizon-docker/oedeploy/torizon-docker-verdin-am62-20260506185053.manifest",
+      "sha256": "2f7ff6d397ed9f2a7cb7f5037e6e7655ec06769047ea995f56a0f16d553888df"
+    }
+  }
+}
