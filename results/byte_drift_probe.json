@@ -1,0 +1,9 @@
+{
+  "source": "official OpenWrt 24.10.4 x86-64 rootfs and published CycloneDX 1.4 BOM",
+  "mutation": "flip the last byte of bin/busybox in a temporary rootfs archive; leave opkg status unchanged",
+  "before_busybox_sha256": "2f05c4e66e4edab3914b24e00a8c016db2b65f4165b56b7842b359c5c1f55e8c",
+  "after_busybox_sha256": "5ef4c2c572e88dc1dac445ce3fde8332ea3d8f8637dc91b0514f569bf96a4d6f",
+  "original_findings": 0,
+  "altered_findings": 0,
+  "interpretation": "The published BOM has no per-file digest. Package-metadata reconciliation cannot observe this byte change; this is an explicit coverage gap, not a clean bill of health."
+}

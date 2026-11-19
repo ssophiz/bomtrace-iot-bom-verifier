@@ -1,0 +1,166 @@
+{
+  "benchmark": "four synthetic cases with five mutation-defined inconsistencies",
+  "tool": {
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "hash_only_baseline": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 3,
+    "precision": 1.0,
+    "recall": 0.4
+  },
+  "schema_only_baseline": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 5,
+    "precision": 1.0,
+    "recall": 0.0
+  },
+  "schema_valid_views": 12,
+  "cases": [
+    {
+      "case": "clean",
+      "expected": [],
+      "tool_findings": [],
+      "hash_baseline_findings": [],
+      "schema_only_findings": [],
+      "tool": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "hash_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "schema_only": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "schema_errors": [],
+      "runtime_ms": 39.66
+    },
+    {
+      "case": "drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|sbom|usr/bin/edge-agent",
+        "REFERENCED_ASSET_UNDECLARED|aibom|usr/share/models/detector.tflite",
+        "REFERENCED_ASSET_UNDECLARED|cbom|etc/device/edge.pem",
+        "SHA256_MISMATCH|sbom|usr/bin/edge-agent"
+      ],
+      "tool_findings": [
+        "PACKAGE_VERSION_MISMATCH|sbom|usr/bin/edge-agent",
+        "REFERENCED_ASSET_UNDECLARED|aibom|usr/share/models/detector.tflite",
+        "REFERENCED_ASSET_UNDECLARED|cbom|etc/device/edge.pem",
+        "SHA256_MISMATCH|sbom|usr/bin/edge-agent"
+      ],
+      "hash_baseline_findings": [
+        "SHA256_MISMATCH|sbom|usr/bin/edge-agent"
+      ],
+      "schema_only_findings": [],
+      "tool": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "hash_baseline": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1.0,
+        "recall": 0.25
+      },
+      "schema_only": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 4,
+        "precision": 1.0,
+        "recall": 0.0
+      },
+      "schema_errors": [],
+      "runtime_ms": 3.74
+    },
+    {
+      "case": "missing",
+      "expected": [
+        "DECLARED_FILE_MISSING|sbom|usr/bin/edge-agent"
+      ],
+      "tool_findings": [
+        "DECLARED_FILE_MISSING|sbom|usr/bin/edge-agent"
+      ],
+      "hash_baseline_findings": [
+        "DECLARED_FILE_MISSING|sbom|usr/bin/edge-agent"
+      ],
+      "schema_only_findings": [],
+      "tool": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "hash_baseline": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "schema_only": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.0
+      },
+      "schema_errors": [],
+      "runtime_ms": 5.06
+    },
+    {
+      "case": "unreferenced",
+      "expected": [],
+      "tool_findings": [],
+      "hash_baseline_findings": [],
+      "schema_only_findings": [],
+      "tool": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "hash_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "schema_only": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "schema_errors": [],
+      "runtime_ms": 6.18
+    }
+  ],
+  "interpretation_limit": "Labels are generated from the mutation procedure; this small synthetic set is a smoke benchmark, not evidence of performance on real IoT firmware."
+}

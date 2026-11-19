@@ -1,0 +1,485 @@
+{
+  "design": "4 unmodified official OpenWrt BOM/rootfs pairs plus 5 controlled metadata mutations per pair",
+  "labels": "defined by the explicit mutation operators; no naturally occurring attack labels",
+  "source_manifest": [
+    {
+      "build": "24.10.4-x86-64",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/x86/64/openwrt-24.10.4-x86-64-rootfs.tar.gz",
+      "sha256": "e7f8ab84eef55c7eb23492de7b0517dbc23fbedaa4abbb680fe64720c309dc03",
+      "bytes": 4629776
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/x86/64/openwrt-24.10.4-x86-64.bom.cdx.json",
+      "sha256": "c35c542daff86733081d685ea4ee7f44f24a9094cf84bfd99e6eee32a45e9f99",
+      "bytes": 17249
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv7/openwrt-24.10.4-armsr-armv7-rootfs.tar.gz",
+      "sha256": "d3ff8e6186cbe2b0423cdbe1f898d5002799f25604334d2bb4ccb3cd1b650494",
+      "bytes": 3917398
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv7/openwrt-24.10.4-armsr-armv7.bom.cdx.json",
+      "sha256": "95f4900f8cae85df0c1ec4a0b57d5903463b6f74006e93e79fdeae67a4cd650c",
+      "bytes": 16536
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv8/openwrt-24.10.4-armsr-armv8-rootfs.tar.gz",
+      "sha256": "b9e784570872f0c3875d75c54eba842fa6f8a9fb2503897080db240fff6431a3",
+      "bytes": 4312265
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "url": "https://downloads.openwrt.org/releases/24.10.4/targets/armsr/armv8/openwrt-24.10.4-armsr-armv8.bom.cdx.json",
+      "sha256": "cd08a3d1ca3406fafca1e75bcf034b9c927bce164450b4b4b4b5622b9be8aebe",
+      "bytes": 16536
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "url": "https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-23.05.5-x86-64-rootfs.tar.gz",
+      "sha256": "383311300e1fd796f5a39bf09ad87bcedec61a7f09263f79cd1352757a3573a9",
+      "bytes": 4322570
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "url": "https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-23.05.5-x86-64.bom.cdx.json",
+      "sha256": "1f5972b44c19f49914e21654f13dceb7db4c59f79d6a4e0f7b19a95da9a62e07",
+      "bytes": 15841
+    }
+  ],
+  "cases": 24,
+  "positive_cases": 20,
+  "unmodified_builds": 4,
+  "findings_expected": 20,
+  "finding_level_metrics": {
+    "full": {
+      "tp": 20,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "version_only": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.4
+    },
+    "inventory_only": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.4
+    }
+  },
+  "case_alert_metrics": {
+    "full": {
+      "tp": 20,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "version_only": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.4
+    },
+    "inventory_only": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.4
+    },
+    "schema_only": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 16,
+      "precision": 1.0,
+      "recall": 0.2
+    }
+  },
+  "runtime_ms_median": 0.457,
+  "runtime_ms_max": 0.688,
+  "runtime_scope": "verify() in-memory only; excludes rootfs archive read and CycloneDX schema validation",
+  "rows": [
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "clean",
+      "expected": [],
+      "found": [],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.688,
+      "bom_components": 129,
+      "installed_packages": 129,
+      "matched_installed": 129
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "bom_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.462,
+      "bom_components": 129,
+      "installed_packages": 129,
+      "matched_installed": 129
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "bom_omission",
+      "expected": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "found": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.429,
+      "bom_components": 128,
+      "installed_packages": 129,
+      "matched_installed": 128
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "bom_ghost",
+      "expected": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "found": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.407,
+      "bom_components": 130,
+      "installed_packages": 129,
+      "matched_installed": 129
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "bom_duplicate",
+      "expected": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "found": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 1,
+      "runtime_ms": 0.483,
+      "bom_components": 130,
+      "installed_packages": 129,
+      "matched_installed": 129
+    },
+    {
+      "build": "24.10.4-x86-64",
+      "scenario": "status_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.524,
+      "bom_components": 129,
+      "installed_packages": 129,
+      "matched_installed": 129
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "clean",
+      "expected": [],
+      "found": [],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.451,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "bom_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.437,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "bom_omission",
+      "expected": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "found": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.458,
+      "bom_components": 123,
+      "installed_packages": 124,
+      "matched_installed": 123
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "bom_ghost",
+      "expected": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "found": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.438,
+      "bom_components": 125,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "bom_duplicate",
+      "expected": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "found": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 1,
+      "runtime_ms": 0.455,
+      "bom_components": 125,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv7",
+      "scenario": "status_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.403,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "clean",
+      "expected": [],
+      "found": [],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.459,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "bom_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.418,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "bom_omission",
+      "expected": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "found": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.46,
+      "bom_components": 123,
+      "installed_packages": 124,
+      "matched_installed": 123
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "bom_ghost",
+      "expected": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "found": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.514,
+      "bom_components": 125,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "bom_duplicate",
+      "expected": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "found": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 1,
+      "runtime_ms": 0.435,
+      "bom_components": 125,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "24.10.4-armsr-armv8",
+      "scenario": "status_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.474,
+      "bom_components": 124,
+      "installed_packages": 124,
+      "matched_installed": 124
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "clean",
+      "expected": [],
+      "found": [],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.512,
+      "bom_components": 127,
+      "installed_packages": 127,
+      "matched_installed": 127
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "bom_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.467,
+      "bom_components": 127,
+      "installed_packages": 127,
+      "matched_installed": 127
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "bom_omission",
+      "expected": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "found": [
+        "INSTALLED_PACKAGE_UNDECLARED|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.505,
+      "bom_components": 126,
+      "installed_packages": 127,
+      "matched_installed": 126
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "bom_ghost",
+      "expected": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "found": [
+        "DECLARED_PACKAGE_ABSENT|bomtrace-ghost"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.402,
+      "bom_components": 128,
+      "installed_packages": 127,
+      "matched_installed": 127
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "bom_duplicate",
+      "expected": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "found": [
+        "DUPLICATE_BOM_COMPONENT|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 1,
+      "runtime_ms": 0.439,
+      "bom_components": 128,
+      "installed_packages": 127,
+      "matched_installed": 127
+    },
+    {
+      "build": "23.05.5-x86-64",
+      "scenario": "status_version_drift",
+      "expected": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "found": [
+        "PACKAGE_VERSION_MISMATCH|busybox"
+      ],
+      "unresolved": [],
+      "schema_error_count": 0,
+      "runtime_ms": 0.434,
+      "bom_components": 127,
+      "installed_packages": 127,
+      "matched_installed": 127
+    }
+  ],
+  "limitations": "Verification reads opkg metadata from official rootfs archives. It cannot detect file-byte drift because the published BOMs have no file digests; these mutations do not test cryptographic or AI BOM verification."
+}

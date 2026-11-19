@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+upstream_sources/
+fixtures_local/
+openwrt_trial_local/
+*_local.json
+*.tar.gz
+*.mp4
+*.pptx
